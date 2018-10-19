@@ -353,6 +353,11 @@ function print_ad_manager_ads_code(): void {
 /**
  * Prints the HTML markup for a single ad tag.
  *
+ * Supports regular ad display as well as AMP multi-size ads.
+ *
+ * Note: Behavior of multi-size and responsive layout is currently not well defined.
+ * AMP forcefully overriedes layout to `fixed`.
+ *
  * @param string $tag_name Ad tag name.
  */
 function print_ad_tag( string $tag_name ): void {
