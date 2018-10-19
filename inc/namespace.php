@@ -48,7 +48,7 @@ function register_editor_assets(): void {
 			'wp-i18n',
 			'wp-plugins',
 		],
-		filemtime( plugin_dir_path( __DIR__ ) . 'assets/js/editor.js' ),
+		'20181019',
 		true
 	);
 
@@ -56,7 +56,7 @@ function register_editor_assets(): void {
 		'simple-google-ads',
 		plugins_url( 'assets/css/editor.css', __DIR__ ),
 		[],
-		filemtime( plugin_dir_path( __DIR__ ) . 'assets/css/editor.css' )
+		'20181019'
 	);
 
 	if ( function_exists( 'gutenberg_get_jed_locale_data' ) ) {
