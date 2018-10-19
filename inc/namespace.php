@@ -202,6 +202,14 @@ function get_ad_code( string $tag_name ): ?string {
 	}
 
 	$tag = array_pop( $found );
+
+	/**
+	 * Filters the ad tag name before it's used in markup.
+	 *
+	 * @param string $tag_name Ad tag name.
+	 */
+	$tag_name = apply_filters( 'simple-google-ads.ad_tag_name', $tag_name );
+
 	$var = sprintf( 'simple_google_ads_ad_map_%s', $tag_name );
 
 	if ( empty( $tag['sizes'] ) ) {
@@ -388,11 +396,7 @@ function print_ad_tag( string $tag_name ): void {
 	$tag           = array_pop( $found );
 	$ad_manager_id = get_ad_manager_account_id();
 
-	/**
-	 * Filters the ad tag name before it's used in markup.
-	 *
-	 * @param string $tag_name Ad tag name.
-	 */
+	/** This filter is documented in inc/namespace.php */
 	$tag_name = apply_filters( 'simple-google-ads.ad_tag_name', $tag_name );
 
 	ob_start();
