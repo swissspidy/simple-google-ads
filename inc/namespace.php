@@ -353,6 +353,20 @@ function print_ad_manager_ads_code(): void {
  * @param string $tag_name Ad tag name.
  */
 function print_ad_tag( string $tag_name ): void {
+	/**
+	 * Filters the ad tag markup before it is generated.
+	 *
+	 * Returning anything else than null short-circuits ad tag markup generation.
+	 *
+	 * @param string $ad_tag   Ad tag markup.
+	 * @param string $tag_name Ad tag name.
+	 */
+	$ad_tag = apply_filters( 'simple-google-ads.pre_ad_tag_markup', null, $tag_name );
+
+	if ( null !== $ad_tag ) {
+		echo (string) $ad_tag;
+	}
+
 	$found = array_filter( get_ad_tags(), function ( $el ) use ( $tag_name ) {
 		return $el['tag'] === $tag_name;
 	} );
@@ -404,5 +418,5 @@ function print_ad_tag( string $tag_name ): void {
 	 * @param string $ad_tag Ad tag markup.
 	 * @param string $tag_name Ad tag name.
 	 */
-	echo apply_filters( 'simple-google-ads.pre_ad_tag_markup', $ad_tag, $tag_name );
+	echo apply_filters( 'simple-google-ads.ad_tag_markup', $ad_tag, $tag_name );
 }
