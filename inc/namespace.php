@@ -4,9 +4,9 @@ namespace SimpleGoogleAds;
 
 function bootstrap() {
 	add_action( 'init', __NAMESPACE__ . '\load_textdomain' );
-
 	add_action( 'init', __NAMESPACE__ . '\register_editor_assets' );
 	add_action( 'init', __NAMESPACE__ . '\register_block_types' );
+	add_action( 'init', __NAMESPACE__ . '\add_shortcode' );
 
 	add_action( 'wp_head', __NAMESPACE__ . '\print_ad_manager_ads_code' );
 
@@ -89,10 +89,32 @@ function register_block_types(): void {
 }
 
 /**
+ * Registers a [simple-google-ads-ad-tag] shortcode to display ads.
+ */
+function add_shortcode(): void {
+	\add_shortcode( 'simple-google-ads-ad-tag', __NAMESPACE__ . '\render_shortcode' );
+}
+
+/**
+ * Renders the custom shortcode to display a single ad.
+ *
+ * @param array|mixed $attributes Shortcode attributes.
+ *
+ * @return string The rendered ad.
+ */
+function render_shortcode( $attributes ): string {
+	if ( empty( $attributes['id'] ) ) {
+		return '';
+	}
+
+	return render_ad_block( [ 'tag' => $attributes['id'] ] );
+}
+
+/**
  * Renders the custom block to display a single ad.
  *
  * @param array $attributes Block attributes.
- * @return string
+ * @return string The rendered ad.
  */
 function render_ad_block( array $attributes ): string {
 	if ( empty( $attributes ) ) {
