@@ -414,7 +414,7 @@ function print_ad_tag( string $tag_name ): void {
 				</amp-ad>
 				<?php
 			else :
-				$iterator = new CachingIterator( new ArrayIterator( $tag['sizes'] ) );
+				$iterator = new CachingIterator( new ArrayIterator( $tag['sizes'] ), 0 );
 
 				foreach ( $iterator as $size ) {
 					if ( ! $iterator->current() ) {
