@@ -23,7 +23,7 @@ function load_textdomain(): void {
 	load_plugin_textdomain(
 		'simple-google-ads',
 		false,
-		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		dirname( plugin_basename( __DIR__ ) ) . '/languages'
 	);
 }
 
