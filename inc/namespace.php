@@ -2,6 +2,9 @@
 
 namespace SimpleGoogleAds;
 
+use ArrayIterator;
+use CachingIterator;
+
 function bootstrap() {
 	add_action( 'init', __NAMESPACE__ . '\load_textdomain' );
 	add_action( 'init', __NAMESPACE__ . '\register_editor_assets' );
@@ -365,6 +368,8 @@ function print_ad_tag( string $tag_name ): void {
 
 	if ( null !== $ad_tag ) {
 		echo (string) $ad_tag;
+
+		return;
 	}
 
 	$found = array_filter( get_ad_tags(), function ( $el ) use ( $tag_name ) {
@@ -389,13 +394,54 @@ function print_ad_tag( string $tag_name ): void {
 	if ( is_amp_endpoint() ) :
 		?>
 		<div class='ad-tag'>
-			<amp-ad
-				width="<?php echo absint( $tag['size'][0] ); ?>"
-				height="<?php echo absint( $tag['size'][1] ); ?>"
-				type="doubleclick"
-				data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
-			>
-			</amp-ad>
+			<?php if ( empty( $tag['sizes'] ) ) : ?>
+				<amp-ad
+					type="doubleclick"
+					layout="responsive"
+					width="<?php echo absint( $tag['size'][0] ); ?>"
+					height="<?php echo absint( $tag['size'][1] ); ?>"
+					data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
+				>
+				</amp-ad>
+				<?php
+			else :
+				$iterator = new CachingIterator( new ArrayIterator( $tag['sizes'] ) );
+
+				foreach ( $iterator as $size ) {
+					if ( ! $iterator->current() ) {
+						continue;
+					}
+
+					$min_width_dimensions = explode( ',', $iterator->key() );
+					$media_query          = sprintf( '(min-width: %dpx)', (int) $min_width_dimensions[0] );
+
+					if ( $iterator->hasNext() ) {
+						$max_width_dimensions = explode( ',', $iterator->getInnerIterator()->key() );
+
+						$media_query .= sprintf( ' and (max-width: %dpx)', ( (int) $max_width_dimensions[0] ) - 1 );
+					}
+
+					$multi_sizes = array_map(
+						function ( $size ) {
+							return sprintf( '%dx%d', $size[0], $size[1] );
+						},
+						$size
+					);
+					?>
+					<amp-ad
+						type="doubleclick"
+						layout="responsive"
+						media="<?php echo esc_attr( $media_query ); ?>"
+						width="<?php echo absint( $tag['size'][0] ); ?>"
+						height="<?php echo absint( $tag['size'][1] ); ?>"
+						data-multi-size="<?php echo esc_attr( implode( ',', $multi_sizes ) ); ?>"
+						data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
+					>
+					</amp-ad>
+					<?php
+				}
+			endif;
+			?>
 		</div>
 	<?php else : ?>
 		<div class='ad-tag'>
