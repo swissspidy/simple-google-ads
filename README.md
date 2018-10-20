@@ -8,3 +8,4 @@ WordPress plugin to display Google Ad Manager ads.
 * AMP support
 * Extensible
 * Custom shortcode
+* Custom widget
