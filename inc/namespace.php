@@ -9,6 +9,8 @@ namespace SimpleGoogleAds;
 
 use ArrayIterator;
 use CachingIterator;
+use WP_Post;
+use WP_Term;
 
 /**
  * Initializes the plugin.
@@ -299,9 +301,8 @@ function print_ad_manager_ads_code(): void {
 	<script src="https://www.googletagservices.com/tag/js/gpt.js"></script>
 	<script type='text/javascript'>
 		var googletag = googletag || { cmd: [] };
-		const adSlots = [];
-
-		let resizeTimer;
+		var adSlots   = [];
+		var resizeTimer;
 
 		googletag.cmd.push( function () {
 			function resizeAds() {
@@ -316,50 +317,9 @@ function print_ad_manager_ads_code(): void {
 		} );
 
 		googletag.cmd.push( function () {
-			<?php if ( is_search() ) : ?>
-			googletag.pubads().setTargeting( 'searchterm', '<?php echo esc_js( get_search_query( false ) ); ?>' );
-			googletag.pubads().setTargeting( 'page', 'search' );
-			<?php endif ?>
-
-			<?php
-			if ( is_singular() ) :
-			$cats = [];
-			$tags = [];
-
-			if ( get_the_category() ) {
-				foreach ( get_the_category() as $cat ) {
-					$cats[] = "'" . esc_js( $cat->cat_name ) . "'";
-				}
-			}
-
-			if ( is_array( get_the_tags() ) ) {
-				foreach ( (array) get_the_tags() as $tag ) {
-					$tags[] = "'" . esc_js( $tag->name ) . "'";
-				}
-			}
-			?>
-			googletag.pubads().setTargeting( 'author', '<?php echo esc_js( get_the_author_meta( 'display_name' ) ); ?>' );
-			googletag.pubads().setTargeting( 'category', [<?php echo implode( ',', $cats ); ?>] );
-			googletag.pubads().setTargeting( 'tag', [<?php echo implode( ',', $tags ); ?>] );
-			googletag.pubads().setTargeting( 'type', '<?php echo esc_js( get_post_type() ); ?>' );
-			googletag.pubads().setTargeting( 'page', 'singular' );
-			googletag.pubads().setTargeting( 'id', '<?php echo esc_js( get_the_ID() ); ?>' );
-			<?php endif; ?>
-
-			<?php if ( is_front_page() ) : ?>
-			googletag.pubads().setTargeting( 'page', 'front' );
-			<?php endif; ?>
-
-			<?php if ( is_archive() ) : ?>
-			googletag.pubads().setTargeting( 'page', 'archive' );
-			googletag.pubads().setTargeting( 'type', '<?php echo esc_js( get_post_type() ); ?>' );
-			<?php endif; ?>
-
-			<?php if ( is_category() ) : ?>
-			googletag.pubads().setTargeting( 'category', [ '<?php echo esc_js( single_cat_title( '', false ) ); ?>' ] );
-			<?php elseif ( is_tag() ) : ?>
-			googletag.pubads().setTargeting( 'tag', [ '<?php echo esc_js( single_tag_title( '', false ) ); ?>' ] );
-			<?php endif; ?>
+			<?php foreach ( get_ad_targeting_data() as $key => $value ) : ?>
+			googletag.pubads().setTargeting( '<?php echo esc_js( $key ); ?>', <?php echo wp_json_encode( $value ); ?> );
+			<?php endforeach; ?>
 
 			googletag.pubads().enableSyncRendering();
 			googletag.pubads().collapseEmptyDivs();
@@ -373,6 +333,81 @@ function print_ad_manager_ads_code(): void {
 		<?php endforeach; ?>
 	</script>
 	<?php
+}
+
+/**
+ * Returns a list of term names for a given taxonomy and post.
+ *
+ * @param  string       $taxonomy Taxonomy slug.
+ * @param \WP_Post|null $post     Optional. Post object. Defaults to global post.
+ * @return array List of term names for the given taxonomy.
+ */
+function get_term_list( string $taxonomy, WP_Post $post = null ): array {
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return [];
+	}
+
+	$terms = get_the_terms( $post->ID, $taxonomy );
+
+	if ( ! $terms || is_wp_error( $terms ) ) {
+		return [];
+	}
+
+	return array_map(
+		function ( WP_Term $term ) {
+			return $term->name;
+		},
+		$terms
+	);
+}
+
+/**
+ * Returns a list of ad targeting data.
+ *
+ * @return array Ad targeting data.
+ */
+function get_ad_targeting_data(): array {
+	$targeting = [];
+
+	$post = get_post();
+
+	if ( is_search() ) {
+		$targeting['searchterm'] = get_search_query();
+		$targeting['page']       = 'search';
+	}
+
+	if ( is_singular() ) {
+		$targeting['page']     = 'singular';
+		$targeting['type']     = get_post_type();
+		$targeting['id']       = get_the_ID();
+		$targeting['title']    = get_the_title();
+		$targeting['author']   = get_the_author_meta( 'display_name', $post ? $post->post_author : false );
+		$targeting['category'] = implode( ',', get_term_list( 'category' ) );
+		$targeting['tag']      = implode( ',', get_term_list( 'post_tag' ) );
+	}
+
+	if ( is_front_page() ) {
+		$targeting['page'] = 'front';
+	}
+
+	if ( is_archive() ) {
+		$targeting['page'] = 'archive';
+		$targeting['type'] = get_post_type();
+	}
+
+	if ( is_category() ) {
+		$targeting['page']  = 'category';
+		$targeting['title'] = single_cat_title( '', false );
+	}
+
+	if ( is_tag() ) {
+		$targeting['page']  = 'tag';
+		$targeting['title'] = single_tag_title( '', false );
+	}
+
+	return $targeting;
 }
 
 /**
