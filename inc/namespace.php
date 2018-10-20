@@ -48,7 +48,7 @@ function register_editor_assets(): void {
 			'wp-i18n',
 			'wp-plugins',
 		],
-		'20181019',
+		'20181020',
 		true
 	);
 
