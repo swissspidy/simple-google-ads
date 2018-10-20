@@ -407,7 +407,12 @@ function get_ad_targeting_data(): array {
 		$targeting['title'] = single_tag_title( '', false );
 	}
 
-	return $targeting;
+	/**
+	 * Filters the ad targeting data before it is returned.
+	 *
+	 * @param array $targeting Ad targeting data.
+	 */
+	return apply_filters( 'simple-google-ads.ad_targeting_data', $targeting );
 }
 
 /**
