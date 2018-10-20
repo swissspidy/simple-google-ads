@@ -1,10 +1,18 @@
 <?php
+/**
+ * Main plugin functionality.
+ *
+ * @package SimpleGoogleAds
+ */
 
 namespace SimpleGoogleAds;
 
 use ArrayIterator;
 use CachingIterator;
 
+/**
+ * Initializes the plugin.
+ */
 function bootstrap() {
 	add_action( 'init', __NAMESPACE__ . '\load_textdomain' );
 	add_action( 'init', __NAMESPACE__ . '\register_editor_assets' );
@@ -14,6 +22,8 @@ function bootstrap() {
 	add_action( 'wp_head', __NAMESPACE__ . '\print_ad_manager_ads_code' );
 
 	add_action( 'simple-google-ads.ad_tag', __NAMESPACE__ . '\print_ad_tag' );
+
+	add_action( 'widgets_init', __NAMESPACE__ . '\register_widget' );
 }
 
 /**
@@ -96,6 +106,13 @@ function register_block_types(): void {
  */
 function add_shortcode(): void {
 	\add_shortcode( 'simple-google-ads-ad-tag', __NAMESPACE__ . '\render_shortcode' );
+}
+
+/**
+ * Registers a custom widget to display ads.
+ */
+function register_widget(): void {
+	\register_widget( new Widget() );
 }
 
 /**

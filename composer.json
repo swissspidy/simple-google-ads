@@ -25,7 +25,10 @@
   "autoload": {
     "files": [
       "inc/namespace.php"
-    ]
+    ],
+    "psr-4": {
+      "SimpleGoogleAds\\": "inc"
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
