@@ -453,6 +453,7 @@ function print_ad_tag( string $tag_name ): void {
 
 	ob_start();
 	if ( is_amp_endpoint() ) :
+		$json_data = [ 'targeting' => get_ad_targeting_data() ];
 		?>
 		<div class='ad-tag'>
 			<?php if ( empty( $tag['sizes'] ) ) : ?>
@@ -462,6 +463,7 @@ function print_ad_tag( string $tag_name ): void {
 					width="<?php echo absint( $tag['size'][0] ); ?>"
 					height="<?php echo absint( $tag['size'][1] ); ?>"
 					data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
+					json="<?php echo esc_attr( wp_json_encode( $json_data ) ); ?>"
 				>
 				</amp-ad>
 				<?php
@@ -497,6 +499,7 @@ function print_ad_tag( string $tag_name ): void {
 						height="<?php echo absint( $tag['size'][1] ); ?>"
 						data-multi-size="<?php echo esc_attr( implode( ',', $multi_sizes ) ); ?>"
 						data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
+						json="<?php echo esc_attr( wp_json_encode( $json_data ) ); ?>"
 					>
 					</amp-ad>
 					<?php
