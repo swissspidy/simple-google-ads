@@ -9,12 +9,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2018-10-19T22:21:20+00:00\n"
-"PO-Revision-Date: 2018-10-19T22:21:20+00:00\n"
+"POT-Creation-Date: 2018-10-20T09:01:57+00:00\n"
+"PO-Revision-Date: 2018-10-20T09:01:57+00:00\n"
 "X-Generator: WP-CLI 2.0.1\n"
 "X-Domain: simple-google-ads\n"
 
 #. Plugin Name of the plugin
+#: inc/Widget.php:17
 msgid "Simple Google Ads"
 msgstr ""
 
@@ -34,27 +35,36 @@ msgstr ""
 msgid "https://pascalbirchler.com"
 msgstr ""
 
-#: assets/js/src/editor/blocks/ad/index.js:17
+#: inc/Widget.php:60
+msgid "Title"
+msgstr ""
+
+#: inc/Widget.php:72
+#: assets/js/src/editor/blocks/ad/index.js:64
+msgid "Ad tag"
+msgstr ""
+
+#: inc/Widget.php:84
+msgid "Choose the ad tag that you want to display"
+msgstr ""
+
+#: assets/js/src/editor/blocks/ad/index.js:16
 msgctxt "block name"
 msgid "Ad "
 msgstr ""
 
-#: assets/js/src/editor/blocks/ad/index.js:19
+#: assets/js/src/editor/blocks/ad/index.js:18
 msgid "Display a single Google Ad Manager ad."
 msgstr ""
 
-#: assets/js/src/editor/blocks/ad/index.js:27
+#: assets/js/src/editor/blocks/ad/index.js:26
 msgid "ad"
 msgstr ""
 
-#: assets/js/src/editor/blocks/ad/index.js:28
+#: assets/js/src/editor/blocks/ad/index.js:27
 msgid "google"
 msgstr ""
 
-#: assets/js/src/editor/blocks/ad/index.js:66
-msgid "Ad tag"
-msgstr ""
-
-#: assets/js/src/editor/blocks/ad/index.js:67
+#: assets/js/src/editor/blocks/ad/index.js:65
 msgid "Type the name of the ad tag that you want to display"
 msgstr ""
