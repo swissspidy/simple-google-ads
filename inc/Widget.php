@@ -81,7 +81,9 @@ class Widget extends WP_Widget {
 				<?php endforeach; ?>
 			</select>
 		</p>
-		<p><?php _e( 'Choose the ad tag that you want to display', 'simple-google-ads' ); ?></p>
+		<p class="help">
+			<?php _e( 'Choose the ad tag that you want to display', 'simple-google-ads' ); ?>
+		</p>
 		<?php
 
 	}
