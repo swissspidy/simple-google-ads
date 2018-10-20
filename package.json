@@ -21,7 +21,6 @@
     "@wordpress/babel-preset-default": "^3.0.0",
     "@wordpress/blocks": "^4.0.0",
     "@wordpress/components": "^4.0.0",
-    "@wordpress/editor": "^4.0.0",
     "@wordpress/element": "^2.0",
     "@wordpress/i18n": "^3.0.0",
     "autoprefixer": "^9.1.0",
