@@ -62,11 +62,13 @@ const postCssPlugins = process.env.NODE_ENV === 'production' ?
         require( 'autoprefixer' ),
     ];
 
-const config = {
+module.exports = {
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
 	// https://webpack.js.org/configuration/entry-context/
-	entry: {},
+	entry: {
+		'editor': './assets/js/src/editor.js',
+	},
 
 	// https://webpack.js.org/configuration/output/
 	output: {
@@ -104,30 +106,14 @@ const config = {
 			},
 		],
 	},
+
+	// https://webpack.js.org/configuration/plugins/
+	plugins: [
+		new MiniCssExtractPlugin({
+			// Options similar to the same options in webpackOptions.output
+			// both options are optional
+			filename: '../css/editor.css',
+			chunkFilename: '[id].css'
+		}),
+	],
 };
-
-module.exports = [
-	{
-		...config,
-
-		entry: {
-			'editor': './assets/js/src/editor.js',
-		},
-
-		output: {
-			...config.output,
-
-			library: 'SimpleGoogleAdsEditor',
-		},
-
-		// https://webpack.js.org/configuration/plugins/
-		plugins: [
-			new MiniCssExtractPlugin({
-				// Options similar to the same options in webpackOptions.output
-				// both options are optional
-				filename: '../css/editor.css',
-				chunkFilename: '[id].css'
-			}),
-		],
-	},
-];
