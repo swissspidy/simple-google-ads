@@ -1,0 +1,30 @@
+{
+   "domain": "messages",
+   "locale_data": {
+      "messages": {
+         "": {
+            "domain": "messages",
+            "plural_forms": "nplurals=2; plural=(n != 1);",
+            "lang": "de_DE"
+         },
+         "Display a single Google Ad Manager ad.": [
+            "Blende eine einzelne Google Ad Manager Anzeige ein."
+         ],
+         "ad": [
+            "werbung"
+         ],
+         "google": [
+            "google"
+         ],
+         "Ad tag": [
+            "Anzeige-Tag"
+         ],
+         "Type the name of the ad tag that you want to display": [
+            "Gib den Namen des einzublendenden Anzeige-Tags ein"
+         ],
+         "block name\u0004Ad ": [
+            "Werbung"
+         ]
+      }
+   }
+}

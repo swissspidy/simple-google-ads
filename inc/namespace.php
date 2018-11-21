@@ -35,7 +35,7 @@ function load_textdomain(): void {
 	load_plugin_textdomain(
 		'simple-google-ads',
 		false,
-		dirname( plugin_basename( __DIR__ ) ) . '/languages'
+		\dirname( plugin_basename( __DIR__ ) ) . '/languages'
 	);
 }
 
@@ -43,7 +43,7 @@ function load_textdomain(): void {
  * Registers JavaScript and CSS for the block editor.
  */
 function register_editor_assets(): void {
-	if ( ! function_exists( 'register_block_type' ) ) {
+	if ( ! \function_exists( 'register_block_type' ) ) {
 		return;
 	}
 
@@ -71,26 +71,8 @@ function register_editor_assets(): void {
 		'20181019'
 	);
 
-	if ( function_exists( 'gutenberg_get_jed_locale_data' ) ) {
-		// Prepare Jed locale data.
-		$locale_data = gutenberg_get_jed_locale_data( 'simple-google-ads' );
-
-		wp_add_inline_script(
-			'simple-google-ads',
-			'wp.i18n.setLocaleData( ' . wp_json_encode( $locale_data ) . ', "simple-google-ads" );',
-			'before'
-		);
-	} elseif ( function_exists( 'wp_get_jed_locale_data' ) ) {
-		// Prepare Jed locale data.
-		$locale_data = wp_get_jed_locale_data( 'simple-google-ads' );
-
-		wp_add_inline_script(
-			'simple-google-ads',
-			'wp.i18n.setLocaleData( ' . wp_json_encode( $locale_data ) . ', "simple-google-ads" );',
-			'before'
-		);
-	} else {
-		trigger_error( 'gutenberg_get_jed_locale_data() is missing, check for a change in Gutenberg.', E_USER_WARNING );
+	if ( \function_exists( 'wp_set_script_translations' ) ) {
+		wp_set_script_translations( 'simple-google-ads', 'simple-google-ads', \dirname( __DIR__ ) . '/languages' );
 	}
 }
 
@@ -98,7 +80,7 @@ function register_editor_assets(): void {
  * Registers the custom block types for server side rendering.
  */
 function register_block_types(): void {
-	if ( ! function_exists( 'register_block_type' ) ) {
+	if ( ! \function_exists( 'register_block_type' ) ) {
 		return;
 	}
 
@@ -185,7 +167,7 @@ function render_ad_block( array $attributes ): string {
  * @return bool Whether it is the AMP endpoint.
  */
 function is_amp_endpoint(): bool {
-	$is_amp_endpoint = function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
+	$is_amp_endpoint = \function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
 
 	/**
 	 * Filters whether the current request is an AMP one or not.
@@ -255,7 +237,7 @@ function get_ad_code( string $tag_name ): ?string {
 	?>
 	var <?php echo esc_attr( $var ); ?> = googletag.sizeMapping().
 	<?php foreach ( $tag['sizes'] as $breakpoint => $sizes ) : ?>
-		addSize(<?php echo json_encode( array_map( 'intval', explode( ',', $breakpoint ) ) ); ?>, <?php echo esc_attr( json_encode( $sizes ) ); ?>).
+		addSize(<?php echo json_encode( array_map( '\intval', explode( ',', $breakpoint ) ) ); ?>, <?php echo esc_attr( json_encode( $sizes ) ); ?>).
 	<?php endforeach; ?>
 	build();
 	adSlots.push(
