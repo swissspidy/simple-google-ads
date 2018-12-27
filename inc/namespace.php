@@ -312,7 +312,6 @@ function print_ad_manager_ads_code(): void {
 			googletag.pubads().setTargeting( '<?php echo esc_js( $key ); ?>', <?php echo wp_json_encode( $value ); ?> );
 			<?php endforeach; ?>
 
-			googletag.pubads().enableSyncRendering();
 			googletag.pubads().collapseEmptyDivs();
 			googletag.enableServices();
 		} );
