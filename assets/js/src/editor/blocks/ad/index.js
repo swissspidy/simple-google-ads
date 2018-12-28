@@ -48,9 +48,7 @@ registerBlockType( 'simple-google-ads/ad', {
 				attributes: {
 					tag: {
 						type: 'string',
-						shortcode: function ( shortcodeAttributes ) {
-							return shortcodeAttributes.id || shortcodeAttributes.tag
-						},
+						shortcode: attributes => attributes.named.id || attributes.named.tag || '',
 					},
 				},
 			},
