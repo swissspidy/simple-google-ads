@@ -1,16 +1,17 @@
 /**
  * WordPress dependencies
  */
-import { __, _x } from '@wordpress/i18n';
-import {
-	registerBlockType,
-} from '@wordpress/blocks';
-import { TextControl } from '@wordpress/components';
+import { __, _x, sprintf } from '@wordpress/i18n';
+import { registerBlockType } from '@wordpress/blocks';
+import { SelectControl, TextControl } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import './editor.css';
+
+const adTags  = window.SimpleGoogleAdsData.tags;
+const tagKeys = Object.getOwnPropertyNames( adTags );
 
 registerBlockType( 'simple-google-ads/ad', {
 	title: _x( 'Ad ', 'block name', 'simple-google-ads' ),
@@ -56,6 +57,28 @@ registerBlockType( 'simple-google-ads/ad', {
 	},
 
 	edit( { className, attributes: { tag }, setAttributes } ) {
+		if ( !tag || (tagKeys.length > 0 && tagKeys.indexOf( tag ) > -1) ) {
+			return (
+				<div className={className}>
+					<SelectControl
+						label={__( 'Ad tag', 'simple-google-ads' )}
+						value={tag}
+						onChange={( users ) => {
+							this.setState( { users } )
+						}}
+						options={tagKeys.map( tagKey => {
+							const tagName = adTags[ tagKey ];
+
+							return {
+								value: tagKey,
+								label:  tagName ? sprintf( '%1$s (%2$s)', tagName, tagKey ) : tagKey,
+							}
+						} )}
+					/>
+				</div>
+			);
+		}
+
 		return (
 			<div className={className}>
 				<TextControl

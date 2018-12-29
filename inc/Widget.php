@@ -77,7 +77,15 @@ class Widget extends WP_Widget {
 				name="<?php echo esc_attr( $this->get_field_name( 'tag' ) ); ?>"
 			>
 				<?php foreach ( get_ad_tags() as $tag ) : ?>
-					<option <?php selected( $tag['tag'], $ad_tag ); ?>><?php echo esc_html( $tag['tag'] ); ?></option>
+					<option value="<?php echo esc_attr( $tag['tag'] ); ?>" <?php selected( $tag['tag'], $ad_tag ); ?>>
+						<?php
+						if ( isset( $tag['name'] ) ) {
+							printf( '%1$s (%2$s)', esc_html( $tag['name'] ), esc_html( $tag['tag'] ) );
+						} else {
+							echo esc_html( $tag['tag'] );
+						}
+						?>
+					</option>
 				<?php endforeach; ?>
 			</select>
 		</p>

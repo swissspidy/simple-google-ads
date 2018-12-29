@@ -74,6 +74,14 @@ function register_editor_assets(): void {
 	if ( \function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'simple-google-ads', 'simple-google-ads', \dirname( __DIR__ ) . '/languages' );
 	}
+
+	wp_localize_script(
+		'simple-google-ads',
+		'SimpleGoogleAdsData',
+		[
+			'tags' => wp_list_pluck( get_ad_tags(), 'name', 'tag' ),
+		]
+	);
 }
 
 /**
