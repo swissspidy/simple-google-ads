@@ -63,8 +63,8 @@ registerBlockType( 'simple-google-ads/ad', {
 					<SelectControl
 						label={__( 'Ad tag', 'simple-google-ads' )}
 						value={tag}
-						onChange={( users ) => {
-							this.setState( { users } )
+						onChange={( newValue ) => {
+							setAttributes( { tag: newValue } );
 						}}
 						options={tagKeys.map( tagKey => {
 							const tagName = adTags[ tagKey ];
