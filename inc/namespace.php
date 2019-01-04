@@ -495,13 +495,32 @@ function print_ad_tag( string $tag_name ): void {
 						},
 						$size
 					);
+
+					$max_ad_width = max(
+						array_map(
+							function ( $size ) {
+								return $size[0];
+							},
+							$size
+						)
+					);
+
+					$max_ad_height = max(
+						array_map(
+							function ( $size ) {
+								return $size[1];
+							},
+							$size
+						)
+					);
+
 					?>
 					<amp-ad
 						type="doubleclick"
 						layout="fixed"
 						media="<?php echo esc_attr( $media_query ); ?>"
-						width="<?php echo absint( $tag['size'][0] ); ?>"
-						height="<?php echo absint( $tag['size'][1] ); ?>"
+						width="<?php echo absint( $max_ad_width ); ?>"
+						height="<?php echo absint( $max_ad_height ); ?>"
 						data-multi-size="<?php echo esc_attr( implode( ',', $multi_sizes ) ); ?>"
 						data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
 						json="<?php echo esc_attr( wp_json_encode( $json_data ) ); ?>"
