@@ -418,8 +418,10 @@ function get_ad_targeting_data(): array {
  *
  * Supports regular ad display as well as AMP multi-size ads.
  *
- * Note: Behavior of multi-size and responsive layout is currently not well defined.
- * AMP forcefully overriedes layout to `fixed`.
+ * Note that multi-size slots may have unexpected interactions with layout="responsive".
+ * For this reason it is strongly encouraged that multi-size slots use layout="fixed".
+ *
+ * AMP forcefully overrides layout to `fixed`.
  *
  * @param string $tag_name Ad tag name.
  */
@@ -462,7 +464,7 @@ function print_ad_tag( string $tag_name ): void {
 			<?php if ( empty( $tag['sizes'] ) ) : ?>
 				<amp-ad
 					type="doubleclick"
-					layout="responsive"
+					layout="fixed"
 					width="<?php echo absint( $tag['size'][0] ); ?>"
 					height="<?php echo absint( $tag['size'][1] ); ?>"
 					data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
@@ -496,7 +498,7 @@ function print_ad_tag( string $tag_name ): void {
 					?>
 					<amp-ad
 						type="doubleclick"
-						layout="responsive"
+						layout="fixed"
 						media="<?php echo esc_attr( $media_query ); ?>"
 						width="<?php echo absint( $tag['size'][0] ); ?>"
 						height="<?php echo absint( $tag['size'][1] ); ?>"
