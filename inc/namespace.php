@@ -460,7 +460,7 @@ function print_ad_tag( string $tag_name ): void {
 	if ( is_amp_endpoint() ) :
 		$json_data = [ 'targeting' => get_ad_targeting_data() ];
 		?>
-		<div class='ad-tag'>
+		<div class='ad-tag' id='<?php echo esc_attr( sprintf( 'ad-tag-%s', $tag_name ) ); ?>'>
 			<?php if ( empty( $tag['sizes'] ) ) : ?>
 				<amp-ad
 					type="doubleclick"
