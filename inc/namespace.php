@@ -299,8 +299,9 @@ function print_ad_manager_ads_code(): void {
 	?>
 	<script src="https://www.googletagservices.com/tag/js/gpt.js"></script>
 	<script type='text/javascript'>
-		var googletag = googletag || { cmd: [] };
-		var adSlots   = [];
+		var googletag   = googletag || { cmd: [] };
+		var adSlots     = [];
+		var windowWidth = window && window.outerWidth || 0;
 		var resizeTimer;
 
 		googletag.cmd.push( function () {
@@ -309,9 +310,15 @@ function print_ad_manager_ads_code(): void {
 			}
 
 			// Refresh adds on resize, debounced.
-			window.addEventListener( 'resize', function () {
-				clearTimeout( resizeTimer );
-				resizeTimer = setTimeout( resizeAds, 250 );
+			window.addEventListener( 'resize', function ( e ) {
+				var newWindowWidth = e.target.outerWidth;
+
+				if ( windowWidth !== newWindowWidth ) {
+					windowWidth = newWindowWidth;
+
+					clearTimeout( resizeTimer );
+					resizeTimer = setTimeout( resizeAds, 250 );
+				}
 			} );
 		} );
 
