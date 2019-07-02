@@ -412,6 +412,8 @@ function get_ad_targeting_data(): array {
 		$targeting['title'] = single_tag_title( '', false );
 	}
 
+	$targeting['lang'] = \function_exists( 'pll_current_language' ) ? pll_current_language() : get_bloginfo( 'language' );
+
 	/**
 	 * Filters the ad targeting data before it is returned.
 	 *
