@@ -207,9 +207,12 @@ function get_ad_manager_account_id(): int {
 function get_ad_code( string $tag_name ): ?string {
 	$ad_manager_id = get_ad_manager_account_id();
 
-	$found = array_filter( get_ad_tags(), function ( $el ) use ( $tag_name ) {
-		return $el['tag'] === $tag_name;
-	} );
+	$found = array_filter(
+		get_ad_tags(),
+		function ( $el ) use ( $tag_name ) {
+			return $el['tag'] === $tag_name;
+		}
+	);
 
 	if ( ! $found ) {
 		return null;
@@ -339,7 +342,7 @@ function print_ad_manager_ads_code(): void {
 /**
  * Returns a list of term names for a given taxonomy and post.
  *
- * @param  string       $taxonomy Taxonomy slug.
+ * @param  string        $taxonomy Taxonomy slug.
  * @param \WP_Post|null $post     Optional. Post object. Defaults to global post.
  * @return array List of term names for the given taxonomy.
  */
@@ -447,9 +450,12 @@ function print_ad_tag( string $tag_name ): void {
 		return;
 	}
 
-	$found = array_filter( get_ad_tags(), function ( $el ) use ( $tag_name ) {
-		return $el['tag'] === $tag_name;
-	} );
+	$found = array_filter(
+		get_ad_tags(),
+		function ( $el ) use ( $tag_name ) {
+			return $el['tag'] === $tag_name;
+		}
+	);
 
 	if ( ! $found ) {
 		return;
@@ -546,7 +552,7 @@ function print_ad_tag( string $tag_name ): void {
 				</script>
 			</div>
 		</div>
-	<?php
+		<?php
 	endif;
 
 	$ad_tag = ob_get_clean();
