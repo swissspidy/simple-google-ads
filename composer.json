@@ -4,6 +4,7 @@
   "description": "WordPress plugin to display Google Ad Manager ads.",
   "license": "GPL-2.0-or-later",
   "require": {
+    "ext-json": "*",
     "php": ">=7.2"
   },
   "require-dev": {

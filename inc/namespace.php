@@ -11,6 +11,9 @@ use ArrayIterator;
 use CachingIterator;
 use WP_Post;
 use WP_Term;
+use function amp_is_request;
+use function dirname;
+use function function_exists;
 
 /**
  * Initializes the plugin.
@@ -35,7 +38,7 @@ function load_textdomain(): void {
 	load_plugin_textdomain(
 		'simple-google-ads',
 		false,
-		\dirname( plugin_basename( __DIR__ ) ) . '/languages'
+		dirname( plugin_basename( __DIR__ ) ) . '/languages'
 	);
 }
 
@@ -43,11 +46,11 @@ function load_textdomain(): void {
  * Registers JavaScript and CSS for the block editor.
  */
 function register_editor_assets(): void {
-	if ( ! \function_exists( 'register_block_type' ) ) {
+	if ( ! function_exists( 'register_block_type' ) ) {
 		return;
 	}
 
-	$script_deps_path    = \dirname( __DIR__ ) . '/assets/js/editor.deps.json';
+	$script_deps_path    = dirname( __DIR__ ) . '/assets/js/editor.deps.json';
 	$script_dependencies = file_exists( $script_deps_path )
 		? json_decode( file_get_contents( $script_deps_path ), false ) // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		: [];
@@ -67,8 +70,8 @@ function register_editor_assets(): void {
 		'20181019'
 	);
 
-	if ( \function_exists( 'wp_set_script_translations' ) ) {
-		wp_set_script_translations( 'simple-google-ads', 'simple-google-ads', \dirname( __DIR__ ) . '/languages' );
+	if ( function_exists( 'wp_set_script_translations' ) ) {
+		wp_set_script_translations( 'simple-google-ads', 'simple-google-ads', dirname( __DIR__ ) . '/languages' );
 	}
 
 	wp_localize_script(
@@ -84,7 +87,7 @@ function register_editor_assets(): void {
  * Registers the custom block types for server side rendering.
  */
 function register_block_types(): void {
-	if ( ! \function_exists( 'register_block_type' ) ) {
+	if ( ! function_exists( 'register_block_type' ) ) {
 		return;
 	}
 
@@ -170,15 +173,15 @@ function render_ad_block( array $attributes ): string {
  *
  * @return bool Whether it is the AMP endpoint.
  */
-function is_amp_endpoint(): bool {
-	$is_amp_endpoint = \function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
+function is_amp(): bool {
+	$is_amp = function_exists( '\amp_is_request' ) && amp_is_request();
 
 	/**
 	 * Filters whether the current request is an AMP one or not.
 	 *
-	 * @param bool $is_amp_endpoint Whether this is an AMP request or not.
+	 * @param bool $is_amp Whether this is an AMP request or not.
 	 */
-	return apply_filters( 'simple-google-ads.is_amp_endpoint', $is_amp_endpoint );
+	return apply_filters( 'simple-google-ads.is_amp_request', $is_amp );
 }
 
 /**
@@ -209,7 +212,7 @@ function get_ad_code( string $tag_name ): ?string {
 
 	$found = array_filter(
 		get_ad_tags(),
-		function ( $el ) use ( $tag_name ) {
+		static function ( $el ) use ( $tag_name ) {
 			return $el['tag'] === $tag_name;
 		}
 	);
@@ -292,7 +295,7 @@ function get_ad_tags(): array {
  * Does nothing on AMP requests, as the AMP plugin requires the necessary script already.
  */
 function print_ad_manager_ads_code(): void {
-	if ( is_amp_endpoint() ) {
+	if ( is_amp() ) {
 		return;
 	}
 	?>
@@ -360,7 +363,7 @@ function get_term_list( string $taxonomy, WP_Post $post = null ): array {
 	}
 
 	return array_map(
-		function ( WP_Term $term ) {
+		static function ( WP_Term $term ) {
 			return $term->name;
 		},
 		$terms
@@ -387,7 +390,7 @@ function get_ad_targeting_data(): array {
 		$targeting['type']     = get_post_type();
 		$targeting['id']       = get_the_ID();
 		$targeting['title']    = get_the_title();
-		$targeting['author']   = get_the_author_meta( 'display_name', $post ? $post->post_author : false );
+		$targeting['author']   = get_the_author_meta( 'display_name', $post->post_author ?? false );
 		$targeting['category'] = implode( ',', get_term_list( 'category' ) );
 		$targeting['tag']      = implode( ',', get_term_list( 'post_tag' ) );
 	}
@@ -411,7 +414,7 @@ function get_ad_targeting_data(): array {
 		$targeting['title'] = single_tag_title( '', false );
 	}
 
-	$targeting['lang'] = \function_exists( 'pll_current_language' ) ? pll_current_language() : get_bloginfo( 'language' );
+	$targeting['lang'] = function_exists( 'pll_current_language' ) ? pll_current_language() : get_bloginfo( 'language' );
 
 	/**
 	 * Filters the ad targeting data before it is returned.
@@ -452,7 +455,7 @@ function print_ad_tag( string $tag_name ): void {
 
 	$found = array_filter(
 		get_ad_tags(),
-		function ( $el ) use ( $tag_name ) {
+		static function ( $el ) use ( $tag_name ) {
 			return $el['tag'] === $tag_name;
 		}
 	);
@@ -468,7 +471,7 @@ function print_ad_tag( string $tag_name ): void {
 	$tag_name = apply_filters( 'simple-google-ads.ad_tag_name', $tag_name );
 
 	ob_start();
-	if ( is_amp_endpoint() ) :
+	if ( is_amp() ) :
 		$json_data = [ 'targeting' => get_ad_targeting_data() ];
 		?>
 		<div class='ad-tag' id='<?php echo esc_attr( sprintf( 'ad-tag-%s', $tag_name ) ); ?>'>
@@ -501,7 +504,7 @@ function print_ad_tag( string $tag_name ): void {
 					}
 
 					$multi_sizes = array_map(
-						function ( $size ) {
+						static function ( $size ) {
 							return sprintf( '%dx%d', $size[0], $size[1] );
 						},
 						$size
@@ -509,7 +512,7 @@ function print_ad_tag( string $tag_name ): void {
 
 					$max_ad_width = max(
 						array_map(
-							function ( $size ) {
+							static function ( $size ) {
 								return $size[0];
 							},
 							$size
@@ -518,7 +521,7 @@ function print_ad_tag( string $tag_name ): void {
 
 					$max_ad_height = max(
 						array_map(
-							function ( $size ) {
+							static function ( $size ) {
 								return $size[1];
 							},
 							$size
