@@ -528,6 +528,20 @@ function print_ad_tag( string $tag_name ): void {
 						)
 					);
 
+					/**
+					 * Filters multi size validation for AMP ads.
+					 *
+					 * If set to false, this will allow secondary sizes to be less than 2/3rds of the corresponding primary size.
+					 * By default this is assumed to be true.
+					 *
+					 * @link https://github.com/ampproject/amphtml/blob/master/extensions/amp-ad-network-doubleclick-impl/multi-size.md
+					 *
+					 * @param bool   $multi_size_validation Whether to enable multi size validation or not. Default true.
+					 * @param string $tag_name              Ad tag name.
+					 */
+					$multi_size_validation = (bool) apply_filters( 'simple-google-ads.amp_multi_size_validation', true, $tag_name );
+					$multi_size_validation = $multi_size_validation ? 'true' : 'false';
+
 					?>
 					<amp-ad
 						type="doubleclick"
@@ -538,6 +552,7 @@ function print_ad_tag( string $tag_name ): void {
 						data-multi-size="<?php echo esc_attr( implode( ',', $multi_sizes ) ); ?>"
 						data-slot="/<?php echo absint( $ad_manager_id ); ?>/<?php echo esc_attr( $tag_name ); ?>"
 						json="<?php echo esc_attr( wp_json_encode( $json_data ) ); ?>"
+						data-multi-size-validation="<?php echo esc_attr( $multi_size_validation ); ?>"
 					>
 					</amp-ad>
 					<?php
